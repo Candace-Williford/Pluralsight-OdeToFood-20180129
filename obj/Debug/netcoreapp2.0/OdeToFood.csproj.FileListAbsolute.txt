@@ -1,0 +1,10 @@
+/home/candace/Repositories/OdeToFood/bin/Debug/netcoreapp2.0/OdeToFood.deps.json
+/home/candace/Repositories/OdeToFood/bin/Debug/netcoreapp2.0/OdeToFood.runtimeconfig.json
+/home/candace/Repositories/OdeToFood/bin/Debug/netcoreapp2.0/OdeToFood.runtimeconfig.dev.json
+/home/candace/Repositories/OdeToFood/bin/Debug/netcoreapp2.0/OdeToFood.dll
+/home/candace/Repositories/OdeToFood/bin/Debug/netcoreapp2.0/OdeToFood.pdb
+/home/candace/Repositories/OdeToFood/obj/Debug/netcoreapp2.0/OdeToFood.csproj.CoreCompileInputs.cache
+/home/candace/Repositories/OdeToFood/obj/Debug/netcoreapp2.0/OdeToFood.AssemblyInfoInputs.cache
+/home/candace/Repositories/OdeToFood/obj/Debug/netcoreapp2.0/OdeToFood.AssemblyInfo.cs
+/home/candace/Repositories/OdeToFood/obj/Debug/netcoreapp2.0/OdeToFood.dll
+/home/candace/Repositories/OdeToFood/obj/Debug/netcoreapp2.0/OdeToFood.pdb
