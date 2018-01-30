@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace OdeToFood
 {
@@ -18,22 +19,61 @@ namespace OdeToFood
         {
             //whenever someone needs a service that implements IGreeter, create an instance of Greeter and pass that service along
             services.AddSingleton<IGreeter, Greeter>();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, 
             IHostingEnvironment env,
-            IGreeter greeter)
+            IGreeter greeter,
+            Microsoft.Extensions.Logging.ILogger<Startup> log)
         {
-            if (env.IsDevelopment())
+
+            //order of middleware matters. be careful. can alter some behaviour using options.
+            // app.UseWelcomePage(new WelcomePageOptions
+            // {
+            //     Path="/wp"
+            // });
+
+            //app.Use( takes a function that takes a delegate and a task (usually an async method))
+            //this function is only called ONCE by .NET Core
+            // app.Use(next => //"next" allows the NEXT piece of middleware to process this request.
+            // {
+            //     return async context => //this middle function is the middleware and is called once per HTTP request
+            //     {
+            //         log.LogInformation("Request incoming"); //you can see these loggers on the ASP.NET core output
+            //         if(context.Request.Path.StartsWithSegments("/mym"))
+            //         {
+            //             log.LogInformation("Request handled");
+            //             await context.Response.WriteAsync("Hit!!");
+            //         }
+            //         else //if I can't handle this request, then go ahead and pass it on to the next piece of middleware
+            //         {
+            //             await next(context);
+            //             log.LogInformation("Response outgoing");
+            //         }
+            //     };
+            // });
+
+            //using appsettings.environmentname.json will allow you to have different configurations depending on the environment you are currently in. This would be useful if you have different DB connection strings across different environments.
+            if (env.IsDevelopment()) //set the ASPNETCORE_ENVIRONMENT = development to trigger this
             {
-                app.UseDeveloperExceptionPage();
+                //env.EnvironmentName
+                app.UseDeveloperExceptionPage(); //gives an interface that shows exception details, stacktrace, request details etc. Very handy for dev debugging. Very big security issue to ever display this to a user
             }
+            else
+                app.UseExceptionHandler();
+
+            //app.UseDefaultFiles();
+            app.UseStaticFiles();
+            //app.UseFileServer(); //does the work of both of the previous 2 middleware
+            app.UseMvcWithDefaultRoute();
+
 
             app.Run(async (context) =>
             {
                 var greeting = greeter.GetMessageOfTheDay();
-                await context.Response.WriteAsync(greeting);
+                await context.Response.WriteAsync($"{greeting} : {env.EnvironmentName}");
             });
         }
     }
