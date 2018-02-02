@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OdeToFood.Services;
 
 namespace OdeToFood
 {
@@ -18,7 +20,8 @@ namespace OdeToFood
         public void ConfigureServices(IServiceCollection services)
         {
             //whenever someone needs a service that implements IGreeter, create an instance of Greeter and pass that service along
-            services.AddSingleton<IGreeter, Greeter>();
+            services.AddSingleton<IGreeter, Greeter>(); //any comp across entire of app, use same instance of I greeter
+            services.AddScoped<IRestaurantData, InMemoryRestaurantData>(); //create an instance of InMemoryRestaurantData for each request. standard behaviour
             services.AddMvc();
         }
 
@@ -67,14 +70,22 @@ namespace OdeToFood
             //app.UseDefaultFiles();
             app.UseStaticFiles();
             //app.UseFileServer(); //does the work of both of the previous 2 middleware
-            app.UseMvcWithDefaultRoute();
+            //app.UseMvcWithDefaultRoute();
+            app.UseMvc(ConfigureRoutes);
 
 
             app.Run(async (context) =>
             {
                 var greeting = greeter.GetMessageOfTheDay();
-                await context.Response.WriteAsync($"{greeting} : {env.EnvironmentName}");
+                context.Response.ContentType = "text/plain";
+                await context.Response.WriteAsync($"Not found");
             });
+        }
+
+        private void ConfigureRoutes(IRouteBuilder routeBuilder)
+        {
+            // /Home/Index/4 // use = to set default of param
+            routeBuilder.MapRoute("Default","{controller=Home}/{action=Index}/{id?}"); // ? makes the corresponding param optional
         }
     }
 }
