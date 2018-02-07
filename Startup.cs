@@ -86,6 +86,7 @@ namespace OdeToFood
         {
             // /Home/Index/4 // use = to set default of param
             routeBuilder.MapRoute("Default","{controller=Home}/{action=Index}/{id?}"); // ? makes the corresponding param optional
+            //MVC framework checks the routing data before the query string if both are provided
         }
     }
 }

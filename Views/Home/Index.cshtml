@@ -1,18 +1,27 @@
-@model IEnumerable<OdeToFood.Models.Restaurant>
+@model OdeToFood.ViewModels.HomeIndexViewModel
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title></title>
 </head>
 <body>
+    <h1>@Model.CurrentMessage</h1>
     <table>
-        @foreach(var restaurant in Model)
+        @foreach(var restaurant in Model.Restaurants)
         {
             <tr>
                 <td>@restaurant.Id</td>
                 <td>@restaurant.Name</td>
+                <td>
+                    <a href="/home/details/@restaurant.Id">Details</a>
+                    @Html.ActionLink("Go", "Details", new { id=restaurant.Id })
+                    <!-- One benefit of HTML helpers is that it consults the routing table. helpful if you ever have to change your routing template.
+                        It's generally an older way of doing this. Now you can use Tag helpers-->
+                    <a asp-action="Details" asp-route-id="@restaurant.Id">More</a>
+                </td>
             </tr>
         }
     </table>
+    <a asp-action="Create" asp-controller="Home">Add Restaurant</a>
 </body>
 </html>
