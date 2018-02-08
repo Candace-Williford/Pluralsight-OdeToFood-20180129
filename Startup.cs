@@ -21,7 +21,8 @@ namespace OdeToFood
         {
             //whenever someone needs a service that implements IGreeter, create an instance of Greeter and pass that service along
             services.AddSingleton<IGreeter, Greeter>(); //any comp across entire of app, use same instance of I greeter
-            services.AddScoped<IRestaurantData, InMemoryRestaurantData>(); //create an instance of InMemoryRestaurantData for each request. standard behaviour
+            //services.AddScoped<IRestaurantData, InMemoryRestaurantData>(); //create an instance of InMemoryRestaurantData for each request. standard behaviour
+            services.AddSingleton<IRestaurantData, InMemoryRestaurantData>(); //changed it to singleton because we want our changes to the list of restaurants to persist across different requests. This would likely cause errors in an environment with multiple users
             services.AddMvc();
         }
 

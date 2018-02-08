@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using OdeToFood.Models;
 using OdeToFood.Services;
 using OdeToFood.ViewModels;
 
@@ -40,9 +41,36 @@ namespace OdeToFood.Controllers
             return View(model);
         }
 
+        [HttpGet] //this is a route constraint that will only be invoked if there's an HTTP GET request
         public IActionResult Create()
         {
             return View();
+        }
+
+        //The framework will try to set EVERY property on the Restaurant. malicious 
+        //user can add additional posted form values to an HTTP request and try to 
+        //manipulate info in the model that they don't have access to. 
+        //known as overposting. can solve this vulnerability by using an input model
+        //that only expects the properties that you would post from a form
+        [HttpPost] //this is a route constraint that will only be invoked if there's an HTTP POST
+        [ValidateAntiForgeryToken] //helps prevent cross-site request forgery by validating form token and confirming that's a form we actually sent to the user
+        public IActionResult Create(RestaurantEditModel model) 
+        {
+            if(ModelState.IsValid)
+            {
+                var newRestaurant = new Restaurant();
+                newRestaurant.Name = model.Name;
+                newRestaurant.Cuisine = model.Cuisine;
+
+                newRestaurant = _restaurantData.Add(newRestaurant);
+
+                //return View("Details", newRestaurant);
+                return RedirectToAction(nameof(Details), new { id = newRestaurant.Id }); //this ensures that the user doesn't stay on a page with a POST operation. You want to send back a redirect action instead that send a GET request instead
+            }
+            else
+            {
+                return View();
+            }
         }
     }
 }

@@ -5,11 +5,19 @@
 
 <form method="POST">
     <!-- <input type="text" name="Name" value="" /> -->
-    <input asp-for="Name" />
+    <div>
+        <label asp-for="Name" />
+        <input asp-for="Name" />
+        <span asp-validation-for="Name" />
+    </div>
 
-    <select asp-for="Cuisine" 
-        asp-items="@Html.GetEnumSelectList<CuisineType>()">
-    </select>
+    <div>
+        <label asp-for="Cuisine" />
+        <select asp-for="Cuisine" 
+            asp-items="@Html.GetEnumSelectList<CuisineType>()">
+        </select>
+        <span asp-validation-for="Cuisine" />
+    </div>
     
     <input type="submit" name="save" value="Save" />
 </form>
