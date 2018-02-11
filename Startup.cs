@@ -6,23 +6,33 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OdeToFood.Data;
 using OdeToFood.Services;
 
 namespace OdeToFood
 {
     public class Startup
     {
+        private IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)//not an injectable method. use ctor
         {
             //whenever someone needs a service that implements IGreeter, create an instance of Greeter and pass that service along
             services.AddSingleton<IGreeter, Greeter>(); //any comp across entire of app, use same instance of I greeter
             //services.AddScoped<IRestaurantData, InMemoryRestaurantData>(); //create an instance of InMemoryRestaurantData for each request. standard behaviour
-            services.AddSingleton<IRestaurantData, InMemoryRestaurantData>(); //changed it to singleton because we want our changes to the list of restaurants to persist across different requests. This would likely cause errors in an environment with multiple users
+            services.AddDbContext<OdeToFoodDbContext>(
+                options => options.UseSqlServer(_configuration.GetConnectionString("OdeToFood")));
+            services.AddScoped<IRestaurantData, SqlRestaurantData>(); //changed it to singleton because we want our changes to the list of restaurants to persist across different requests. This would likely cause errors in an environment with multiple users
             services.AddMvc();
         }
 
