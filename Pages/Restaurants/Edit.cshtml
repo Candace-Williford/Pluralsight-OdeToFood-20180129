@@ -1,0 +1,35 @@
+@page "{id}"
+@using OdeToFood.Pages.Restaurants;
+
+@model EditModel
+
+@{
+    ViewBag.Title = $"Edit {Model.Restaurant.Name}";
+}
+
+<h1>Edit @Model.Restaurant.Name</h1>
+
+<form method="POST">
+    
+    <input type="hidden" asp-for="Restaurant.Id" />
+
+    <div>
+        <label asp-for="Restaurant.Name" />
+        <input asp-for="Restaurant.Name" />
+        <span asp-validation-for="Restaurant.Name" />
+    </div>
+
+    <div>
+        <label asp-for="Restaurant.Cuisine" />
+        <select asp-for="Restaurant.Cuisine" 
+            asp-items="@Html.GetEnumSelectList<CuisineType>()">
+        </select>
+        <span asp-validation-for="Restaurant.Cuisine" />
+    </div>
+    
+    <input type="submit" name="save" value="Save" />
+</form>
+
+<!--
+    name of input has to match the property name it corresponds to
+-->

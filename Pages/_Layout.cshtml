@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>@ViewBag.title</title>
+    </head>
+    <body>
+        <div>@RenderBody()</div> <!-- need to have one call to RenderBody to render. It is this location that the framework will render a content view -->
+        <footer>
+            @RenderSection("footer", required:false)
+        </footer>
+    </body>
+</html>
