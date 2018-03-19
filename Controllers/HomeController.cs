@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OdeToFood.Models;
 using OdeToFood.Services;
@@ -5,6 +6,8 @@ using OdeToFood.ViewModels;
 
 namespace OdeToFood.Controllers
 {
+    //can place this attribute at controller OR action level
+    //[Authorize] // just checks to make sure that the user is in fact authenicated. can also pass params that will check the users roles and policies. policies can contain and encapsulate all the checks you want to do on a user
     public class HomeController : Controller //receives request for root of the application
     {
         private IRestaurantData _restaurantData;
@@ -20,6 +23,7 @@ namespace OdeToFood.Controllers
         //IActionResult will allow you to return different results
         //ActionResult doesn't immediately immediately write to the response. returns data struction that tells .NET Core where to go next in the pipleline
         //particularly handy for unit testing because it allows you to check what's returned and how it behaves without having to set up a full web server
+        //[AllowAnonymous] //overrides [Authorize] attribute on controller
         public IActionResult Index() //checks for this method
         {
             //return Content("Hello from the home controller.");
@@ -42,6 +46,7 @@ namespace OdeToFood.Controllers
         }
 
         [HttpGet] //this is a route constraint that will only be invoked if there's an HTTP GET request
+        
         public IActionResult Create()
         {
             return View();

@@ -1,4 +1,4 @@
 .vscode
-*.csproj
-*.csproj.*
 appsettings.json
+node_modules
+obj

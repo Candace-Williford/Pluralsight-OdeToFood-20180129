@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +30,17 @@ namespace OdeToFood
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)//not an injectable method. use ctor
         {
+            // services.AddAuthentication(options =>
+            // {
+            //     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            // })
+            // .AddOpenIdConnect(options =>
+            // {
+            //     _configuration.Bind("AzureAd", options); //pulls from appsettings.json
+            // })
+            // .AddCookie();
+
             //whenever someone needs a service that implements IGreeter, create an instance of Greeter and pass that service along
             services.AddSingleton<IGreeter, Greeter>(); //any comp across entire of app, use same instance of I greeter
             //services.AddScoped<IRestaurantData, InMemoryRestaurantData>(); //create an instance of InMemoryRestaurantData for each request. standard behaviour
@@ -78,19 +92,27 @@ namespace OdeToFood
             else
                 app.UseExceptionHandler();
 
+            // used for setting up login for your application. Enable SSL for your application to use Open ID connection
+            // app.UseRewriter(new RewriteOptions()
+            //                     .AddRedirectToHttpsPermanent());
+
             //app.UseDefaultFiles();
             app.UseStaticFiles();
             //app.UseFileServer(); //does the work of both of the previous 2 middleware
+
+            app.UseNodeModules(env.ContentRootPath);
+
+            //app.UseAuthentication();
+
             //app.UseMvcWithDefaultRoute();
             app.UseMvc(ConfigureRoutes);
 
-
-            app.Run(async (context) =>
-            {
-                var greeting = greeter.GetMessageOfTheDay();
-                context.Response.ContentType = "text/plain";
-                await context.Response.WriteAsync($"Not found");
-            });
+            // app.Run(async (context) =>
+            // {
+            //     var greeting = greeter.GetMessageOfTheDay();
+            //     context.Response.ContentType = "text/plain";
+            //     await context.Response.WriteAsync($"Not found");
+            // });
         }
 
         private void ConfigureRoutes(IRouteBuilder routeBuilder)
